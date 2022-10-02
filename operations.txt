@@ -1,0 +1,26 @@
+docker network create --subnet=172.20.0.0/16 dataflow_network
+docker pull zookeeper:3.4
+docker run -d --hostname zookeepernode --net dataflow_network --ip 172.20.1.3 --name dataflow_zookeeper --publish 2181:2181 zookeeper:3.4
+docker pull ches/kafka
+docker run -d --hostname kafkanode --net dataflow_network --ip 172.20.1.4 --name dataflow_kafka --publish 9092:9092 --publish 7203:7203 --env KAFKA_ADVERTISED_HOST_NAME=192.168.99.100 --env ZOOKEEPER_IP=zookeepernode ches/kafka
+
+cd datamaking_hadoop_spark_cluster_image
+./1_create_hadoop_spark_image.sh
+./2_create_hadoop_spark_cluster.sh create
+
+presto
+- http://localhost:8080
+spark master:
+- http://localhost:9090
+HDFS management: 
+- namenode: http://localhost:50070
+pgadmin:
+- http://localhost:5050/browser/
+hue:
+- http://localhost:8088/home
+
+conda create -n dataflow python=3.7 # if needed
+conda activate dataflow
+pip install django
+
+spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.2 spark_data_pipeline.py

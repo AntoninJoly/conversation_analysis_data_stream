@@ -1,0 +1,152 @@
+version: '2' 
+
+services:
+  spark-master:
+    image: bde2020/spark-master:2.1.0-hadoop2.8-hive-java8
+    container_name: spark-master
+    hostname: spark-master
+    ports:
+      - 9090:8080
+      - 7077:7077
+    env_file:
+      - hadoop-hive.env
+    depends_on:
+      - hive-server
+    restart: unless-stopped
+
+  spark-worker:
+    image: bde2020/spark-worker:2.1.0-hadoop2.8-hive-java8
+    container_name: spark-worker
+    hostname: spark-worker
+    depends_on:
+      - spark-master
+    environment:
+      - SPARK_MASTER=spark://spark-master:7077
+    ports:
+      - 8081:8081
+    env_file:
+      - hadoop-hive.env
+
+  zookeeper:
+    image: 'bitnami/zookeeper:latest'
+    container_name: zookeeper
+    hostname: zookeeper
+    restart: unless-stopped
+    env_file:
+      - zookeeper.env
+    ports:
+      - 22181:2181
+
+  kafka:
+    image: 'bitnami/kafka:latest'
+    container_name: kafka
+    hostname: kafka
+    restart: unless-stopped
+    depends_on:
+      - zookeeper
+    ports:
+      - 9093:9093
+      # - 9092:9092
+    env_file:
+      - kafka.env
+
+  namenode:
+    image: bde2020/hadoop-namenode:1.1.0-hadoop2.8-java8
+    container_name: namenode
+    hostname: namenode
+    # restart: unless-stopped
+    # volumes:
+    #   - namenode:/hadoop/dfs/name
+    environment:
+      - CLUSTER_NAME=test
+    env_file:
+      - hadoop-hive.env
+    ports:
+      # HDFS port
+      - 9000:9000
+      # HDFS NameNode WebUI
+      - 50070:50070
+
+  datanode:
+    image: bde2020/hadoop-datanode:1.1.0-hadoop2.8-java8
+    container_name: datanode
+    hostname: datanode
+    restart: always
+    # volumes:
+    #   - hadoop_datanode:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070"
+    env_file:
+      - hadoop-hive.env
+    # ports:
+    #   # # HDFS port
+    #   # - 9005:9005
+    #   # # HDFS NameNode WebUI
+    #   - 50075:50075
+
+  hive-server:
+    image: bde2020/hive:2.3.2-postgresql-metastore
+    container_name: hive-server
+    hostname: hive-server
+    env_file:
+      - hive.env
+    restart: unless-stopped
+    depends_on:
+      - namenode
+    environment:
+      HIVE_CORE_CONF_javax_jdo_option_ConnectionURL: "jdbc:postgresql://hive-metastore/metastore"
+      # SERVICE_PRECONDITION: "hive-metastore:9083"
+    ports:
+      - 10000:10000
+      - 10001:10001
+
+  hive-metastore:
+    image: bde2020/hive:2.3.2-postgresql-metastore
+    container_name: hive-metastore
+    hostname: hive-metastore
+    env_file:
+      - hive.env
+    command: /opt/hive/bin/hive --service metastore
+    restart: unless-stopped
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070 hive-metastore-postgresql:5432"
+    ports:
+      - 9083:9083
+      - 9084:9084
+
+  hive-metastore-postgresql:
+    image: bde2020/hive-metastore-postgresql:2.3.0
+    container_name: postgresql
+    hostname: postgresql
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB = db
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=admin
+    ports:
+      - 6543:5432
+
+  presto-coordinator:
+    image: shawnzhu/prestodb:0.181
+    ports:
+      - 8080:8080
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    hostname: pgadmin
+    ports:
+      - 5050:80
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: post@gres.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+
+  hue:
+    image: bde2020/hdfs-filebrowser:3.11
+    container_name: hue
+    hostname: hue
+    ports:
+      - 8088:8088
+    environment:
+      - NAMENODE_HOST=namenode
