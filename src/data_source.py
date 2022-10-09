@@ -25,11 +25,11 @@ if __name__ == "__main__":
             event_message = {}
             event_datetime = datetime.now()
             
-            event_message['datetime'] = str(event_datetime)
-            event_message['context'] = v['context']
-            event_message['sentences'] = ''.join(v['turns'])
-            event_message['sentence_id'] = int(k)
-            event_message['event_id'] = idx
+            event_message['event_datetime'] = str(event_datetime)
+            event_message['event_context'] = v['context']
+            event_message['event_sentences'] = ''.join(v['turns'])
+            # event_message['sentence_id'] = int(k)
+            # event_message['event_id'] = idx
 
             print(f"Printing message id: {idx}")
             kafka_producer_obj.send(cfg.TOPIC_NAME_CONS, event_message)
