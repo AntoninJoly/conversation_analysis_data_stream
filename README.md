@@ -24,8 +24,6 @@ Apache visualization tools (e.g., Apache Zeppelin) are used to generate graphica
 
 ![](./assets/flowchart.drawio.svg)
 
-
-
 # Conversation processing 📤
 
 ## Conversation summarization
@@ -50,14 +48,12 @@ In order to stream conversation to apache cluster, dataset taken from:
 
 
 ```bash
-Copy code
 git clone https://github.com/your-username/messaging-app-summarizer.git
 cd messaging-app-summarizer
 ```
 
 - Install the required Python packages:
 """
-Copy code
 pip install -r requirements.txt
 """
 
@@ -73,11 +69,11 @@ cd ./docker
 docker-compose-up
 ```
 
-Gather Messages:
+Start message streaming:
 Execute the message gathering script:
 ```python
-Copy code
-python gather_messages.py
+cd ./src
+python data_source.py
 ```
 
 # To be done next 🛠
