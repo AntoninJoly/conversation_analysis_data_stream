@@ -48,12 +48,12 @@ In order to stream conversation to apache cluster, dataset taken from:
 ## Setup
 - Clone the repository to your local machine:
 
-"""
-bash
+
+```bash
 Copy code
 git clone https://github.com/your-username/messaging-app-summarizer.git
 cd messaging-app-summarizer
-"""
+```
 
 - Install the required Python packages:
 """
@@ -75,10 +75,10 @@ docker-compose-up
 
 Gather Messages:
 Execute the message gathering script:
-"""
+```python
 Copy code
 python gather_messages.py
-"""
+```
 
 # To be done next 🛠
 Following steps are considered:
