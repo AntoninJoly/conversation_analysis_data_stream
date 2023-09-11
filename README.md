@@ -74,3 +74,6 @@ Following steps are considered:
 - [ ] BI
 - [ ] Rollback & backup
 - [ ] Unittest
+
+# License
+This project is licensed under the MIT License.
