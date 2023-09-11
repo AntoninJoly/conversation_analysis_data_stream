@@ -51,11 +51,10 @@ In order to stream conversation to apache cluster, dataset taken from:
 git clone https://github.com/your-username/messaging-app-summarizer.git
 cd messaging-app-summarizer
 ```
-
 - Install the required Python packages:
-"""
+```bash
 pip install -r requirements.txt
-"""
+```
 
 ## Usage
 Configure Messaging Application API Credentials:

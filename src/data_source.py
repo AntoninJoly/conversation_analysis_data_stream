@@ -28,13 +28,14 @@ if __name__ == "__main__":
             event_message['event_datetime'] = str(event_datetime)
             event_message['event_context'] = v['context']
             event_message['event_sentences'] = ''.join(v['turns'])
-            # event_message['sentence_id'] = int(k)
+            event_message['sentence_id'] = int(k)
+            event_message['user_name'] = v['speaker']
             # event_message['event_id'] = idx
 
             print(f"Printing message id: {idx}")
             kafka_producer_obj.send(cfg.TOPIC_NAME_CONS, event_message)
-            time.sleep(0.05)
-            if idx == 10:
+            time.sleep(0.01)
+            if idx == 3:
                 break
 
     except Exception as e:

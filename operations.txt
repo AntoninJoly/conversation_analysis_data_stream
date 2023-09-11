@@ -18,6 +18,8 @@ pgadmin:
 - http://localhost:5050/browser/
 hue:
 - http://localhost:8088/home
+kafkaui:
+- http://localhost:18080
 
 conda create -n dataflow python=3.7 # if needed
 conda activate dataflow
