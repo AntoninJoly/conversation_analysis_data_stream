@@ -68,9 +68,9 @@ python data_source.py
 
 # To be done next 🛠
 Following steps are considered:
-[] Monitoring & alert
-[] Scaling
-[] Security
-[] BI
-[] Rollback & backup
-[] Unittest
+- [ ] Monitoring & alert
+- [ ] Scaling
+- [ ] Security
+- [ ] BI
+- [ ] Rollback & backup
+- [ ] Unittest
